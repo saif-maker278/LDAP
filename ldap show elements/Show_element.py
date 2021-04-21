@@ -3,18 +3,18 @@ import os
 import sys
 check = os.popen(r'command -v ldapsearch').read()
 if check == "":
-	print("Cette action n'est utilisee que sur un serveur LDAP")
+	print("This action is only used on a LDAP server ")
 	exit(1)
 
 if len(sys.argv) != 4:
-	print("Usage: ./Afficher_Elements_LDAP.py <Login DN> <Mot de passe> <Point de depart>")
+	print("Usage: ./Afficher_Elements_LDAP.py <Login DN> <Password> <Starting point>")
 	exit(1)
 
 login = sys.argv[1]
 mdp = sys.argv[2]
 base = sys.argv[3]
 
-# Si le point de depart n'est pas donne, on affiche tout
+#If Starting point doesn't exist then show all
 if base == "":
 	commande = r'ldapsearch -x -w {} -D {} -s "sub" dn|grep "^dn"|cut -d":" -f2'.format(mdp, login)
 else:
@@ -24,8 +24,8 @@ stdout = os.popen(commande)
 output = stdout.read()
 liste_dn = output.split('\n')
 
-# Ici les éléments sont comme "cn=Titi,ou=Toto,dc=security,dc=tn"
-# On les inverse pour avoir "dc=tn,dc=security,ou=Toto,cn=Titi"
+# Element exemple: "cn=Titi,ou=Toto,dc=security,dc=tn"
+# Reverse them to get "dc=tn,dc=security,ou=Toto,cn=Titi"
 liste_dn_inversee = []
 for dn in liste_dn:
 	liste_dn_inversee.append(','.join(dn.split(',')[::-1]))
